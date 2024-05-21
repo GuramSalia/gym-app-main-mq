@@ -1,0 +1,12 @@
+1. remove TraceFilter.java
+I am gatting traceIds becauase of dependencies <groupId>io.micrometer</groupId>
+
+2. remove LogFilter.java
+I tried how I would have worked with filters. It would work with some restrictions, though I don't think I would need to log request/response body details anyway.
+
+3. question: I have an aspect on class level. when I create trainer/trainee I don't need one of the aspects. maybe I will create a separate controller 'CreateUserController', which will not apply @CheckUsernamePassword Aspect;
+
+
+4. remove code from main.
+
+5.

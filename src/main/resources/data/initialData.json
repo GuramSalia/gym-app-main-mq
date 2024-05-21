@@ -1,0 +1,100 @@
+{
+  "Trainer": [
+
+    {
+      "userId": 1,
+      "specialization": "CARDIO",
+      "firstName": "Tim",
+      "lastName": "Smith",
+      "username": "Tim.Smith",
+      "password": "123",
+      "isActive": true
+    },
+    {
+      "userId": 2,
+      "specialization": "STRENGTH",
+      "firstName": "Sam",
+      "lastName": "Jones",
+      "username": "Sam.Jones",
+      "password": "123",
+      "isActive": true
+    }
+  ],
+  "Trainee": [
+    {
+      "userId": 3,
+      "firstName": "John",
+      "lastName": "Doe",
+      "username": "John.Doe",
+      "address": "address of customer 1 from in_memory db",
+      "dob": "2000-02-21",
+      "password": "123",
+      "isActive": true
+    },
+    {
+      "userId": 4,
+      "firstName": "Jane",
+      "lastName": "Smith",
+      "username": "Jane.Smith",
+      "address": "address of customer 2 from in_memory db",
+      "dob": "2000-01-21",
+      "password": "123",
+      "isActive": true
+    }
+
+  ],
+  "Training": [
+    {
+      "trainingId": 1,
+      "trainee": {
+        "userId": 3,
+        "firstName": "John",
+        "lastName": "Doe",
+        "username": "John.Doe",
+        "address": "address of customer 1 from in_memory db",
+        "dob": "2000-02-21",
+        "password": "123",
+        "isActive": true
+      },
+      "trainer": {
+        "userId": 1,
+        "specialization": "CARDIO",
+        "firstName": "Tim",
+        "lastName": "Smith",
+        "username": "Tim.Smith",
+        "password": "123",
+        "isActive": true
+      },
+      "trainingName": "Cardio Workout",
+      "trainingType": "CARDIO",
+      "trainingDate": "2024-02-21",
+      "trainingDurationInMinutes": 60
+    },
+    {
+      "trainingId": 2,
+      "trainee": {
+        "userId": 4,
+        "firstName": "Jane",
+        "lastName": "Smith",
+        "username": "Jane.Smith",
+        "address": "address of customer 2 from in_memory db",
+        "dob": "2000-01-21",
+        "password": "123",
+        "isActive": true
+      },
+      "trainer": {
+        "userId": 2,
+        "specialization": "STRENGTH",
+        "firstName": "Sam",
+        "lastName": "Jones",
+        "username": "Sam.Jones",
+        "password": "123",
+        "isActive": true
+      },
+      "trainingName": "Strength Training",
+      "trainingType": "STRENGTH",
+      "trainingDate": "2024-02-22",
+      "trainingDurationInMinutes": 45
+    }
+  ]
+}
