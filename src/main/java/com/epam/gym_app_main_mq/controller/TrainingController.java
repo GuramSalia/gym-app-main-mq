@@ -1,15 +1,17 @@
 package com.epam.gym_app_main_mq.controller;
 
 import com.epam.gym_app_main_mq.api.*;
+import com.epam.gym_app_main_mq.api.stat.*;
 import com.epam.gym_app_main_mq.aspect.LogRestDetails;
 import com.epam.gym_app_main_mq.global.EndpointSuccessCounter;
-import com.epam.gym_app_main_mq.model.*;
-import com.epam.gym_app_main_mq.proxy.TrainingStatsProxy;
-import com.epam.gym_app_main_mq.service.TokenService;
+import com.epam.gym_app_main_mq.messaging.Senders;
+import com.epam.gym_app_main_mq.model.Trainee;
+import com.epam.gym_app_main_mq.model.Trainer;
+import com.epam.gym_app_main_mq.model.Training;
+import com.epam.gym_app_main_mq.model.TrainingType;
 import com.epam.gym_app_main_mq.service.TraineeService;
 import com.epam.gym_app_main_mq.service.TrainerService;
 import com.epam.gym_app_main_mq.service.TrainingService;
-import io.micrometer.core.instrument.MeterRegistry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -17,6 +19,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,9 +36,7 @@ public class TrainingController {
     private final TraineeService traineeService;
     private final TrainerService trainerService;
     private final EndpointSuccessCounter endpointSuccessCounter;
-    private final TokenService tokenService;
-
-    private final TrainingStatsProxy proxy;
+    private final Senders mqSenders;
 
     /*
          TASK2.1
@@ -55,135 +56,129 @@ public class TrainingController {
             TraineeService traineeService,
             TrainerService trainerService,
             EndpointSuccessCounter endpointSuccessCounter,
-            MeterRegistry meterRegistry, TokenService tokenService,
-            TrainingStatsProxy proxy
+            Senders mqSenders
     ) {
         this.trainingService = trainingService;
         this.traineeService = traineeService;
         this.trainerService = trainerService;
         this.endpointSuccessCounter = endpointSuccessCounter;
-        this.tokenService = tokenService;
-        this.proxy = proxy;
+        this.mqSenders = mqSenders;
     }
 
     // modified POST/training
     @PostMapping("/gym-app/training")
     @Operation(summary = "Register Training")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Training registered successfully")
-    })
-    public ResponseEntity<Map<String, Integer>> registerTraining(
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Training registered successfully")
+            }
+    )
+    public ResponseEntity<TrainingDTO> registerTraining(
             @Valid @RequestBody TrainingRegistrationRequest trainingRegistrationRequest,
-            @RequestHeader(name = "gym-app-correlation-id", required = false, defaultValue = "no-correlation-id") String correlationId
+            @RequestHeader(name = "gym_app_correlation_id", required = false, defaultValue = "no-correlation-id") String correlationId
     ) {
+        logCorrelationId(correlationId);
+        correlationId = checkAndIfInvalidUpdateCorrelationId(correlationId);
+        logUpdatedCorrelationId(correlationId);
+
         Training training = getTraining(trainingRegistrationRequest);
         trainingService.create(training);
+        TrainingDTO trainingDTO = new TrainingDTO(training);
         endpointSuccessCounter.incrementCounter("POST/training");
 
-        UpdateStatRequest updateStatRequest = getUpdateStatRequestFromTraining(training);
-        updateStatRequest.setActionType(ActionType.ADD);
+        UpdateStatRequestInMainApp updateStatRequestInMainApp = getUpdateStatRequestFromTraining(training);
+        updateStatRequestInMainApp.setActionType(ActionType.ADD);
+        log.info("\n\n - updateStatRequestInMainApp--\n{}\n\n", updateStatRequestInMainApp);
 
-        int trainerId = updateStatRequest.getTrainerId();
-        String jwtToken = getTokenByTrainerId(trainerId);
-        updateStatRequest.setToken(jwtToken);
+        mqSenders.requestStatUpdate(updateStatRequestInMainApp, correlationId);
 
-        log.info("\n\nTrainingController -> update stat  -> correlationId: {}\n\n", correlationId);
-        log.info("\n\n - updateStatRequest--\n{}\n\n", updateStatRequest);
-        ResponseEntity<Map<String, Integer>> updateStats = proxy.updateTrainerStats(updateStatRequest, correlationId);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(updateStats.getBody());
+        return ResponseEntity.status(HttpStatus.CREATED).body(trainingDTO);
     }
 
     // new DELETE/training
     @DeleteMapping("/gym-app/training")
     @Operation(summary = "Delete Training")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Training registered successfully")
-    })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "Training registered successfully")
+            }
+    )
     public ResponseEntity<Map<String, Integer>> deleteTraining(
             @Valid @RequestBody DeleteTrainingRequest deleteTrainingRequest,
-            @RequestHeader(name = "gym-app-correlation-id", required = false, defaultValue = "no-correlation-id") String correlationId
+            @RequestHeader(name = "gym_app_correlation_id", required = false, defaultValue = "no-correlation-id") String correlationId
     ) {
+        logCorrelationId(correlationId);
+        correlationId = checkAndIfInvalidUpdateCorrelationId(correlationId);
+        logUpdatedCorrelationId(correlationId);
+
         Integer trainingId = deleteTrainingRequest.getTrainingId();
+        Training training = trainingService.getById(trainingId);
         trainingService.delete(trainingId);
         endpointSuccessCounter.incrementCounter("POST/training");
 
-        Training training = trainingService.getById(trainingId);
+        UpdateStatRequestInMainApp updateStatRequestInMainApp = getUpdateStatRequestFromTraining(training);
+        updateStatRequestInMainApp.setActionType(ActionType.DELETE);
 
-        UpdateStatRequest updateStatRequest = getUpdateStatRequestFromTraining(training);
-        updateStatRequest.setActionType(ActionType.DELETE);
+        mqSenders.requestStatUpdate(updateStatRequestInMainApp, correlationId);
 
-        String jwtToken = getTokenByTrainingId(trainingId);
-        updateStatRequest.setToken(jwtToken);
-
-        log.info("\n\nTrainingController -> delete stat  -> correlationId: {}\n\n", correlationId);
-        ResponseEntity<Map<String, Integer>> response = proxy.updateTrainerStats(updateStatRequest, correlationId);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response.getBody());
+        return ResponseEntity.status(HttpStatusCode.valueOf(204)).build();
     }
 
     // new GET/training/monthly-stat
     @GetMapping("/gym-app/trainings/monthly-stat")
     @Operation(summary = "Get monthly stat about total training minutes of a given trainer in a particular month")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved stat")
-    })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "204",
+                            description = "no content returned, but successfully requested monthly stat")
+            }
+    )
     public ResponseEntity<Map<String, Integer>> getTrainerMonthlyStats(
-            @Valid @RequestBody MonthlyStatRequest monthlyStatRequest,
-            @RequestHeader(name = "gym-app-correlation-id", required = false, defaultValue = "no-correlation-id") String correlationId
+            @Valid @RequestBody MonthlyStatRequestInMainApp monthlyStatRequestInMainApp,
+            @RequestHeader(name = "gym_app_correlation_id", required = false, defaultValue = "no-correlation-id") String correlationId
     ) {
-        int trainerId = monthlyStatRequest.getTrainerId();
-        String jwtToken = getTokenByTrainerId(trainerId);
-        monthlyStatRequest.setToken(jwtToken);
+        logCorrelationId(correlationId);
+        correlationId = checkAndIfInvalidUpdateCorrelationId(correlationId);
+        logUpdatedCorrelationId(correlationId);
 
-        log.info("\n\nTrainingController -> get monthly stat  -> correlationId: {}\n\n", correlationId);
-        ResponseEntity<Map<String, Integer>> response = proxy.getTrainerMonthlyStats(monthlyStatRequest, correlationId);
-        return ResponseEntity.status(HttpStatus.OK).body(response.getBody());
+        mqSenders.requestMonthlyStat(monthlyStatRequestInMainApp, correlationId);
+
+        return ResponseEntity.status(HttpStatusCode.valueOf(204)).build();
     }
 
     // new GET/training/full-stat
     @GetMapping("/gym-app/trainings/full-stat")
     @Operation(summary = "Get full stat about total training minutes of a given trainer in a particular month")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved full stat of a trainer")
-    })
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "no content returned, but successfully requested full stat of a trainer")})
     public ResponseEntity<Map<Integer, List<Map<String, Integer>>>> getTrainerFullStats(
-            @Valid @RequestBody FullStatRequest fullStatRequest,
-            @RequestHeader(name = "gym-app-correlation-id", required = false, defaultValue = "no-correlation-id") String correlationId
+            @Valid @RequestBody FullStatRequestInMainApp fullStatRequestInMainApp,
+            @RequestHeader(name = "gym_app_correlation_id", required = false, defaultValue = "no-correlation-id") String correlationId
     ) {
-        log.info("\n\nTrainingController -> get full stat -> correlationId: {}\n\n", correlationId);
+        logCorrelationId(correlationId);
+        correlationId = checkAndIfInvalidUpdateCorrelationId(correlationId);
+        logUpdatedCorrelationId(correlationId);
 
-        int trainerId = fullStatRequest.getTrainerId();
-        String jwtToken = getTokenByTrainerId(trainerId);
-        fullStatRequest.setToken(jwtToken);
+        mqSenders.requestFullStat(fullStatRequestInMainApp, correlationId);
 
-        ResponseEntity<Map<Integer, List<Map<String, Integer>>>> response = proxy.getTrainerFullStats(fullStatRequest
-                , correlationId);
-        return ResponseEntity.status(HttpStatus.OK).body(response.getBody());
+        return ResponseEntity.status(HttpStatusCode.valueOf(204)).build();
     }
 
-    private String getTokenByTrainerId(int trainerId) {
-        log.info("\n\n TrainingController > getTokenByTrainerId\n\n");
-        User trainer = trainerService.getById(trainerId);
-        String validTokenByUsername = tokenService.getValidTokenByUsername(trainer);
-        log.info("\n\n  validTokenByUsername {}  \n\n", validTokenByUsername);
-        return validTokenByUsername;
-    }
-
-    private String getTokenByTrainingId(int trainingId) {
-        Training training = trainingService.getById(trainingId);
-        int trainerId = training.getTrainer().getUserId();
-        return getTokenByTrainerId(trainerId);
-    }
-
-    private UpdateStatRequest getUpdateStatRequestFromTraining(Training training) {
+    private UpdateStatRequestInMainApp getUpdateStatRequestFromTraining(Training training) {
         Date date = training.getTrainingDate();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         Integer year = calendar.get(Calendar.YEAR);
         Integer month = calendar.get(Calendar.MONTH) + 1;
 
-        UpdateStatRequest request = new UpdateStatRequest();
+        UpdateStatRequestInMainApp request = new UpdateStatRequestInMainApp();
         request.setTrainerId(training.getTrainer().getUserId());
         request.setYear(year);
         request.setMonth(month);
@@ -192,8 +187,8 @@ public class TrainingController {
         return request;
     }
 
-    private MonthlyStatRequest getMonthlyStatRequestFromTraining(Training training) {
-        MonthlyStatRequest request = new MonthlyStatRequest();
+    private MonthlyStatRequestInMainApp getMonthlyStatRequestFromTraining(Training training) {
+        MonthlyStatRequestInMainApp request = new MonthlyStatRequestInMainApp();
         Date date = training.getTrainingDate();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
@@ -287,5 +282,24 @@ public class TrainingController {
                 periodFrom,
                 periodTo,
                 traineeUsername);
+    }
+
+    private String generateCorrelationId() {
+        return java.util.UUID.randomUUID().toString();
+    }
+
+    private String checkAndIfInvalidUpdateCorrelationId(String correlationId) {
+        if (correlationId == null || correlationId.isEmpty() || "no-correlation-id".equals(correlationId)) {
+            correlationId = generateCorrelationId();
+        }
+        return correlationId;
+    }
+
+    private void logCorrelationId(String correlationId) {
+        log.info("\n\nTrainingController -> update stat  -> initial correlationId: {}\n\n", correlationId);
+    }
+
+    private void logUpdatedCorrelationId(String correlationId) {
+        log.info("\n\nTrainingController -> update stat  -> updated correlationId: {}\n\n", correlationId);
     }
 }

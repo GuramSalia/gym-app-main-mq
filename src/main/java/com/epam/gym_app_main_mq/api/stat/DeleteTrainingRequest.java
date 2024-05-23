@@ -1,4 +1,4 @@
-package com.epam.gym_app_main_mq.api;
+package com.epam.gym_app_main_mq.api.stat;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -7,6 +7,4 @@ import lombok.Data;
 public class DeleteTrainingRequest {
     @NotNull
     Integer trainingId;
-    @NotNull
-    private String token;
 }

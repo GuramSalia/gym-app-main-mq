@@ -1,5 +1,6 @@
 package com.epam.gym_app_main_mq.service;
 
+import com.epam.gym_app_main_mq.api.UsernamePassword;
 import com.epam.gym_app_main_mq.dao.TraineeDAO;
 import com.epam.gym_app_main_mq.dao.TrainerDAO;
 import com.epam.gym_app_main_mq.model.Trainer;
@@ -62,9 +63,10 @@ class TrainerServiceTest {
         trainerDAOMap.put("TRAINER_IN_MEMORY", trainerDAO);
         checkIfUserHasRequiredFields = new CheckIfUserHasRequiredFields();
         trainerService = new TrainerService(
-                trainerDAOMap, traineeDAOMap, checkIfUsernameExists, checkIfUserHasRequiredFields, usernameGenerator);
-        trainerService.setTraineeDAO(traineeDAO);
-        trainerService.setTrainerDAO(trainerDAO);
+                trainerDAO, traineeDAO, checkIfUsernameExists,
+                checkIfUserHasRequiredFields,
+                usernameGenerator);
+
     }
 
     @Test
@@ -73,7 +75,7 @@ class TrainerServiceTest {
         when(usernameGenerator.generateUsername(trainer1)).thenReturn("John.Doe");
         when(trainerDAO.create(trainer1)).thenReturn(Optional.of(trainer1));
         when(trainerDAO.getById(10)).thenReturn(Optional.of(trainer1));
-        Optional<Trainer> result = Optional.ofNullable(trainerService.create(trainer1));
+        Optional<UsernamePassword> result = Optional.ofNullable(trainerService.create(trainer1));
         assertEquals(
                 result,
                 trainerDAO.getById(10),

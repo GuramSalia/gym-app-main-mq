@@ -1,5 +1,6 @@
 package com.epam.gym_app_main_mq.service;
 
+import com.epam.gym_app_main_mq.api.UsernamePassword;
 import com.epam.gym_app_main_mq.dao.TraineeDAO;
 import com.epam.gym_app_main_mq.model.Trainee;
 import com.epam.gym_app_main_mq.utils.CheckIfUsernameExists;
@@ -60,10 +61,9 @@ class TraineeServiceTest {
         Map<String, TraineeDAO> traineeDAOMap = new HashMap<>();
         traineeDAOMap.put("IN_MEMORY", traineeDAO);
 
-        traineeService = new TraineeService(traineeDAOMap, checkIfUsernameExists, checkIfUserHasRequiredFields,
+        traineeService = new TraineeService(traineeDAO, checkIfUsernameExists, checkIfUserHasRequiredFields,
                                             usernameGenerator);
 
-        traineeService.setTraineeDAO(traineeDAO);
     }
 
     @Test
@@ -74,7 +74,7 @@ class TraineeServiceTest {
         when(traineeDAO.create(trainee1)).thenReturn(Optional.of(trainee1));
         when(traineeDAO.getById(10)).thenReturn(Optional.of(trainee1));
         log.info("2....");
-        Optional<Trainee> result = Optional.ofNullable(traineeService.create(trainee1));
+        Optional<UsernamePassword> result = Optional.ofNullable(traineeService.create(trainee1));
         log.info("3....");
         assertEquals(
                 result,
