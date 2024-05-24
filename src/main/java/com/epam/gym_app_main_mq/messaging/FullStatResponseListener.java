@@ -1,5 +1,6 @@
 package com.epam.gym_app_main_mq.messaging;
 
+import com.epam.gym_app_main_mq.exception.dlqs.dlqTriggeringException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,11 @@ public class FullStatResponseListener {
             log.info("\n\n MAIN-APP -> FULL STAT Listener -> Received message: {}, with correlationId: {}\n\n",
                      message, correlationId);
         } catch (Exception e) {
-            log.error("MAIN-APP -> FULL STAT Listener -> Error processing message: {}", e.getMessage());
+            String errorMessage = String.format(
+                    "MAIN-APP -> FULL STAT Listener -> Error processing message: %s",
+                    e.getMessage());
+            log.error(errorMessage);
+            throw new dlqTriggeringException(errorMessage);
         }
     }
 }
