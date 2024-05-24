@@ -29,8 +29,8 @@ public class StorageInitializer {
     private final InMemoryStorage storage;
 
     public StorageInitializer(InMemoryStorage storage) {
-        log.info("\n\nstorage in StorageInitializer : " + storage+"\n");
-        log.info("\n\ntrainees in StorageInitializer : " + storage.getTrainees().hashCode()+"\n");
+        log.info("\n\nstorage in StorageInitializer : {}\n", storage);
+        log.info("\n\ntrainees in StorageInitializer : {}\n", storage.getTrainees().hashCode());
         this.storage = storage;
     }
 

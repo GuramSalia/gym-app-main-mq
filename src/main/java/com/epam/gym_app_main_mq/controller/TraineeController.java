@@ -1,7 +1,7 @@
 package com.epam.gym_app_main_mq.controller;
 
 import com.epam.gym_app_main_mq.api.*;
-import com.epam.gym_app_main_mq.aspect.LogRestDetails;
+import com.epam.gym_app_main_mq.aspect.LogDetails;
 import com.epam.gym_app_main_mq.exception.UnauthorizedException;
 import com.epam.gym_app_main_mq.global.EndpointSuccessCounter;
 import com.epam.gym_app_main_mq.model.Trainee;
@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-@LogRestDetails
+@LogDetails
 @RestController
 @Slf4j
 public class TraineeController {

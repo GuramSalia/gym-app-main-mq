@@ -1,8 +1,11 @@
 package com.epam.gym_app_main_mq.controller;
 
-import com.epam.gym_app_main_mq.api.*;
+import com.epam.gym_app_main_mq.api.TrainingDTO;
+import com.epam.gym_app_main_mq.api.TrainingRegistrationRequest;
+import com.epam.gym_app_main_mq.api.TrainingsByTraineeRequest;
+import com.epam.gym_app_main_mq.api.TrainingsByTrainerRequest;
 import com.epam.gym_app_main_mq.api.stat.*;
-import com.epam.gym_app_main_mq.aspect.LogRestDetails;
+import com.epam.gym_app_main_mq.aspect.LogDetails;
 import com.epam.gym_app_main_mq.global.EndpointSuccessCounter;
 import com.epam.gym_app_main_mq.messaging.Senders;
 import com.epam.gym_app_main_mq.model.Trainee;
@@ -29,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-@LogRestDetails
+@LogDetails
 @RestController
 public class TrainingController {
     private final TrainingService trainingService;
@@ -38,18 +41,6 @@ public class TrainingController {
     private final EndpointSuccessCounter endpointSuccessCounter;
     private final Senders mqSenders;
 
-    /*
-         TASK2.1
-         1. update training stats: when training created. action type is 'ADD'. endpoint: "/training".
-         2. update training stats: when training removed. action type is 'DELETE'. endpoint: new DELETE "/training".
-         3. get training stats: full stat.  endpoint: new GET "/training/monthly-stat"
-         4. get training stats: monthly stat. endpoint: new GET "/training/full-stat"
-
-         TASK3.1
-         1. instead of proxy use ActiveMQ
-         2. since communication should be asynchronous, I need to use MessageListener.
-         3. I assume I can use Artemis as ActiveMQ
-    */
     @Autowired
     public TrainingController(
             TrainingService trainingService,
