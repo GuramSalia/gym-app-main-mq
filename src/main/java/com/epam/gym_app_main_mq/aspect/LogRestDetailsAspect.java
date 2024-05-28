@@ -17,7 +17,7 @@ import java.util.Arrays;
 @Component
 public class LogRestDetailsAspect {
 
-    @Pointcut("@within(com.epam.gymappmainservice.aspect.LogRestDetails)")
+    @Pointcut("@within(com.epam.gym_app_main_mq.aspect.LogRestDetails)")
     public void logRestDetailsPointcut() {
     }
 

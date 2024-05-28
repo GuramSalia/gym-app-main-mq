@@ -43,7 +43,7 @@ class TrainerDAOInMemoryStorageImplTest {
         // new way of creating traineeService
         Map<String, TraineeDAO> traineeDAOMap = new HashMap<>();
         traineeDAOMap.put("IN_MEMORY", traineeDAO);
-        traineeService = new TraineeService(traineeDAO, checkIfUsernameExists, checkIfUserHasRequiredFields, usernameGenerator, new BCryptPasswordEncoder());
+        traineeService = new TraineeService(traineeDAO, checkIfUsernameExists, checkIfUserHasRequiredFields, usernameGenerator);
 //        traineeService.setTraineeDAO(traineeDAO);
 
         // new way of creating trainerService
