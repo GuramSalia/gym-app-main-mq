@@ -2,7 +2,7 @@ package com.epam.gym_app_main_mq.controller;
 
 import com.epam.gym_app_main_mq.api.TokenValidationRequest;
 import com.epam.gym_app_main_mq.api.TokenValidationResponse;
-import com.epam.gym_app_main_mq.aspect.LogRestDetails;
+import com.epam.gym_app_main_mq.aspect.LogDetails;
 import com.epam.gym_app_main_mq.service.JwtService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@LogRestDetails
+@LogDetails
 @RestController
 public class TokenValidationController {
     private final JwtService jwtService;

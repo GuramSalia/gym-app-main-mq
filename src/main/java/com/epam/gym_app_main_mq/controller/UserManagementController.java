@@ -3,7 +3,7 @@ package com.epam.gym_app_main_mq.controller;
 import com.epam.gym_app_main_mq.api.AuthenticationResponse;
 import com.epam.gym_app_main_mq.api.PasswordUpdateRequest;
 import com.epam.gym_app_main_mq.api.UsernamePassword;
-import com.epam.gym_app_main_mq.aspect.LogRestDetails;
+import com.epam.gym_app_main_mq.aspect.LogDetails;
 import com.epam.gym_app_main_mq.global.EndpointSuccessCounter;
 import com.epam.gym_app_main_mq.model.Token;
 import com.epam.gym_app_main_mq.service.*;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@LogRestDetails
+@LogDetails
 public class UserManagementController {
 
     private final UserService userService;

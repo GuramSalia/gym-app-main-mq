@@ -17,11 +17,11 @@ import java.util.Arrays;
 @Component
 public class LogRestDetailsAspect {
 
-    @Pointcut("@within(com.epam.gym_app_main_mq.aspect.LogRestDetails)")
-    public void logRestDetailsPointcut() {
+    @Pointcut("@within(com.epam.gym_app_main_mq.aspect.LogDetails)")
+    public void logDetailsPointcut() {
     }
 
-    @AfterReturning(pointcut = "logRestDetailsPointcut()", returning = "response")
+    @AfterReturning(pointcut = "logDetailsPointcut()", returning = "response")
     public void logEndpointAndRequestDetails(JoinPoint joinPoint, Object response) {
 
         String endpointPath = getEndpointPath(joinPoint);

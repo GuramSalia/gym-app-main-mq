@@ -1,7 +1,7 @@
 package com.epam.gym_app_main_mq.controller;
 
 import com.epam.gym_app_main_mq.api.UsernamePassword;
-import com.epam.gym_app_main_mq.aspect.LogRestDetails;
+import com.epam.gym_app_main_mq.aspect.LogDetails;
 import com.epam.gym_app_main_mq.global.EndpointSuccessCounter;
 import com.epam.gym_app_main_mq.model.TrainingType;
 import com.epam.gym_app_main_mq.service.TrainingTypeService;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@LogRestDetails
+@LogDetails
 @RestController
 public class TrainingTypesController {
 

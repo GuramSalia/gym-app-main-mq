@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-//@FeignClient(name = "training-stats-service")
 public interface TrainingStatsProxy {
 
     @GetMapping("/stats-api/v1/trainer-full-stats")

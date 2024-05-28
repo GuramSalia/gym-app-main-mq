@@ -3,7 +3,7 @@ package com.epam.gym_app_main_mq.controller;
 import com.epam.gym_app_main_mq.api.TraineeRegistrationRequest;
 import com.epam.gym_app_main_mq.api.TrainerRegistrationRequest;
 import com.epam.gym_app_main_mq.api.UsernamePassword;
-import com.epam.gym_app_main_mq.aspect.LogRestDetails;
+import com.epam.gym_app_main_mq.aspect.LogDetails;
 import com.epam.gym_app_main_mq.global.EndpointSuccessCounter;
 import com.epam.gym_app_main_mq.model.Trainee;
 import com.epam.gym_app_main_mq.model.Trainer;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@LogRestDetails
+@LogDetails
 @RestController
 public class CreateUserController {
 
