@@ -163,17 +163,29 @@ public class TrainingController {
     }
 
     private UpdateStatRequestInMainApp getUpdateStatRequestFromTraining(Training training) {
+        // I need to pass additionally username,firstname, lastname, status
         Date date = training.getTrainingDate();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         Integer year = calendar.get(Calendar.YEAR);
         Integer month = calendar.get(Calendar.MONTH) + 1;
 
+        // get missing values from Trainer
+        String username = training.getTrainer().getUsername();
+        String firstName = training.getTrainer().getFirstName();
+        String lastName = training.getTrainer().getLastName();
+        Boolean status = training.getTrainer().getIsActive();
+
         UpdateStatRequestInMainApp request = new UpdateStatRequestInMainApp();
         request.setTrainerId(training.getTrainer().getUserId());
         request.setYear(year);
         request.setMonth(month);
         request.setDuration(training.getTrainingDurationInMinutes());
+        // set missing values from Trainer
+        request.setUserName(username);
+        request.setFirstName(firstName);
+        request.setLastName(lastName);
+        request.setStatus(status);
 
         return request;
     }

@@ -15,7 +15,7 @@ import java.util.Arrays;
 @Slf4j
 @Aspect
 @Component
-public class LogRestDetailsAspect {
+public class LogDetailsAspect {
 
     @Pointcut("@within(com.epam.gym_app_main_mq.aspect.LogDetails)")
     public void logDetailsPointcut() {
