@@ -63,7 +63,6 @@ public class UsernamePasswordValidationService {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime blockedUntil = user.getBlockStartTime().plusMinutes(BLOCK_DURATION_MINUTES);
 
-            // blocked time not expired
             if (now.isBefore(blockedUntil)) {
                 log.info("\n\n>>UsernamePasswordValidationService >authenticate > isBlocked , blocked not expired\n");
                 StringBuilder sb = new StringBuilder();
@@ -73,7 +72,6 @@ public class UsernamePasswordValidationService {
                 throw new UserBlockedException(sb.toString());
             }
 
-            // blocked time expired
             user.setIsBlocked(false);
             if (!correctPasswordProvided) {
                 log.info("\n\n>>UsernamePasswordValidationService >isBlocked but blocked expired, incorrect pwd\n");

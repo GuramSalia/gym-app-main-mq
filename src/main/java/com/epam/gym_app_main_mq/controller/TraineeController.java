@@ -35,8 +35,7 @@ public class TraineeController {
     public TraineeController(
             TraineeService traineeService,
             TrainerService trainerService,
-            EndpointSuccessCounter endpointSuccessCounter,
-            MeterRegistry meterRegistry
+            EndpointSuccessCounter endpointSuccessCounter
     ) {
         this.traineeService = traineeService;
         this.trainerService = trainerService;

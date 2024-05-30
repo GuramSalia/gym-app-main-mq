@@ -36,7 +36,6 @@ public class TrainerController {
 
     public TrainerController(
             TrainerService trainerService,
-            MeterRegistry meterRegistry,
             EndpointSuccessCounter endpointSuccessCounter
     ) {
         this.trainerService = trainerService;

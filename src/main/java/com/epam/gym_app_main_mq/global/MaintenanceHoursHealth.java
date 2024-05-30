@@ -16,7 +16,7 @@ public class MaintenanceHoursHealth implements HealthIndicator {
         int maintenanceEndHour = 18;
         LocalDateTime now = LocalDateTime.now();
         int currentHour = now.getHour();
-        log.info("\n\ncurrentHour: " + currentHour + "\n");
+        log.info("\n\ncurrentHour: {}\n", currentHour);
         String message_key = "maintenance hours";
         if (currentHour >= maintenanceStartHour && currentHour <= maintenanceEndHour) {
             return Health.outOfService().withDetail(message_key, true).build();

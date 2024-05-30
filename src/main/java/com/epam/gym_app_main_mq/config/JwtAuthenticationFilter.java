@@ -34,7 +34,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
 
-        // Allow access to H2 console without JWT authentication
         if (requestURI.contains("/h2-console")) {
             filterChain.doFilter(request, response);
             return;

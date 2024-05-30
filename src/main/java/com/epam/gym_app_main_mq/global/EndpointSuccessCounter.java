@@ -153,11 +153,11 @@ public class EndpointSuccessCounter {
     }
 
     public void incrementCounter(String methodAndUri) {
-        log.info("\n\n>> from EndpointSuccessCounter >> method/uri: " + methodAndUri + "\n");
+        log.info("\n\n>> from EndpointSuccessCounter >> method/uri: {}\n", methodAndUri);
         Counter counter = this.counterMap.get(methodAndUri);
-        log.info("\n\n>> "+counter.toString()+"\n");
+        log.info("\n\n>> {}\n", counter.toString());
         if (counter == null) {
-            log.info("\n\n>> no counter found for method/uri: " + methodAndUri + "\n");
+            log.info("\n\n>> no counter found for method/uri: {}\n", methodAndUri);
             return;
         }
         counter.increment();

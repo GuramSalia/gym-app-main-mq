@@ -18,8 +18,6 @@ public class RandomPasswordGenerator {
         }
         log.info(">>>> Generating random password");
 
-//        String testPassword = "123";
-//        return testPassword;
         return sb.toString();
     }
 }
