@@ -38,7 +38,7 @@ public class TrainingService {
         Optional<Training> trainingOptional = trainingDAO.getById(id);
         if (trainingOptional.isEmpty()) {
             log.error("Cannot get training with id: {}", id);
-            throw new TrainingNotFoundException("training not found");
+//            throw new TrainingNotFoundException("training not found");
         }
         return trainingOptional.get();
     }

@@ -119,7 +119,6 @@ public class TrainingController {
         return ResponseEntity.status(HttpStatusCode.valueOf(204)).build();
     }
 
-    // new GET/training/monthly-stat
     @GetMapping("/gym-app/trainings/monthly-stat")
     @Operation(summary = "Get monthly stat about total training minutes of a given trainer in a particular month")
     @ApiResponses(
@@ -142,7 +141,6 @@ public class TrainingController {
         return ResponseEntity.status(HttpStatusCode.valueOf(204)).build();
     }
 
-    // new GET/training/full-stat
     @GetMapping("/gym-app/trainings/full-stat")
     @Operation(summary = "Get full stat about total training minutes of a given trainer in a particular month")
     @ApiResponses(value = {

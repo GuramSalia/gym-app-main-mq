@@ -108,8 +108,8 @@ public class UserManagementController {
     public String token() {
         log.info("\n\nUserManagementController > token() called\n");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info("\n\nUserManagementController > token() > authentication.getDetails()"
-                         + authentication.getDetails().toString() + "\n");
+        log.info("\n\nUserManagementController > token() > authentication.getDetails(){}\n",
+                 authentication.getDetails().toString());
         return authentication.getDetails().toString();
     }
 }
