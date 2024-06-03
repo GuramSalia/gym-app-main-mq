@@ -1,6 +1,8 @@
 package com.epam.gym_app_main_mq.messaging;
 
 import com.epam.gym_app_main_mq.exception.dlqs.dlqTriggeringException;
+import com.epam.gym_app_main_mq.repository.TestHelperRepository;
+import com.epam.gym_app_main_mq.utils.TestCorrelationIdHolder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -16,10 +18,15 @@ import java.util.Map;
 @Component
 public class FullStatResponseListener {
     private final ObjectMapper objectMapper;
+    private final TestHelperRepository testHelperRepository;
 
     @Autowired
-    public FullStatResponseListener(ObjectMapper objectMapper) {
+    public FullStatResponseListener(
+            ObjectMapper objectMapper,
+            TestHelperRepository testHelperRepository
+    ) {
         this.objectMapper = objectMapper;
+        this.testHelperRepository = testHelperRepository;
     }
 
     @JmsListener(destination = "${spring.jms.fullStatResponse}")
@@ -27,6 +34,11 @@ public class FullStatResponseListener {
             String jsonMessage, @Header("gym_app_correlation_id") String correlationId
     ) {
         try {
+            TestCorrelationIdHolder testCorrelationIdHolder = testHelperRepository.findById(1).orElse(null);
+            assert testCorrelationIdHolder != null;
+            testCorrelationIdHolder.setFullStatCorrelationId(correlationId);
+            testHelperRepository.save(testCorrelationIdHolder);
+
             Map<String, List<Map<String, Integer>>> message = objectMapper.readValue(
                     jsonMessage,
                     new TypeReference<Map<String, List<Map<String, Integer>>>>() {});
