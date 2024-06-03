@@ -46,8 +46,4 @@ public class Trainer extends User {
     @Override
     public int hashCode() {return Objects.hash(getUserId());}
 
-    //    @Override
-    //    public Collection<? extends GrantedAuthority> getAuthorities() {
-    //        return List.of(new SimpleGrantedAuthority(Role.TRAINER.name()));
-    //    }
 }

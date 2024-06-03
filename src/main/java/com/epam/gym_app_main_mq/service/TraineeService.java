@@ -87,7 +87,6 @@ public class TraineeService {
         return usernamePassword;
     }
 
-    // InMemory implementation doesn't require 3 arguments
     public boolean delete(Trainee trainee) {
         log.info(">>>> Deleting trainee with username: " + trainee.getUsername());
         return traineeDAO.delete(trainee);
@@ -103,7 +102,6 @@ public class TraineeService {
         return traineeDAO.delete(trainee);
     }
 
-    // InMemory implementation doesn't require 3 arguments
     public Trainee update(Trainee trainee) {
 
         if (checkIfUserHasRequiredFields.isInvalidUser(trainee)) {
@@ -149,7 +147,6 @@ public class TraineeService {
         return traineeOptional.get();
     }
 
-    // Is this not redundant, because we only encoded password in db?
     public Trainee findByUsernameAndPassword(String username, String password) {
         Optional<Trainee> traineeOptional = traineeDAO.findByUsernameAndPassword(username, password);
         if (traineeOptional.isEmpty()) {
@@ -165,7 +162,7 @@ public class TraineeService {
             String currentPassword,
             String newPassword
     ) {
-        log.info(">>>> Updating trainee with username: " + trainee.getUsername());
+        log.info(">>>> Updating trainee with username: {}", trainee.getUsername());
 
         if (!checkIfUsernameExists.usernameExists(traineeDAO, username, currentPassword)) {
             throw new UnauthorizedException("no trainee with such username or password");
@@ -176,7 +173,6 @@ public class TraineeService {
         }
 
         trainee.setPassword(passwordEncoder.encode(newPassword));
-        //        trainee.setPassword(newPassword);
         return traineeDAO.update(trainee);
     }
 

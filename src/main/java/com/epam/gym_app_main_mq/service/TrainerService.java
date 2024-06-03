@@ -53,7 +53,7 @@ public class TrainerService {
         if (!checkIfUsernameExists.usernameExists(trainerDAO, username, password)) {
             throw new UnauthorizedException("no trainer with such username or password");
         }
-        log.info(">>>> Getting trainer with id: " + id);
+        log.info(">>>> Getting trainer with id: {}", id);
         Optional<Trainer> trainerOptional = trainerDAO.getById(id);
         if (trainerOptional.isEmpty()) {
             throw new UserNotFoundException("no such trainer");
@@ -63,7 +63,7 @@ public class TrainerService {
 
     public Trainer getById(int id) {
 
-        log.info(">>>> Getting trainer with id: " + id);
+        log.info(">>>> Getting trainer with id: {}", id);
         Optional<Trainer> trainerOptional = trainerDAO.getById(id);
         if (trainerOptional.isEmpty()) {
             throw new UserNotFoundException("no such trainer");
@@ -99,7 +99,6 @@ public class TrainerService {
         return usernamePassword;
     }
 
-    // InMemory implementation doesn't require 3 arguments
     public Trainer update(Trainer trainer) {
         Optional<Trainer> trainerOptional = trainerDAO.update(trainer);
         if (trainerOptional.isEmpty()) {
@@ -121,7 +120,7 @@ public class TrainerService {
             throw new IllegalStateException("invalid user");
         }
 
-        log.info(">>>> Updating trainer with username: " + trainer.getUsername());
+        log.info(">>>> Updating trainer with username: {}", trainer.getUsername());
         Optional<Trainer> trainerOptional = trainerDAO.update(trainer);
         if (trainerOptional.isEmpty()) {
             throw new UserNotUpdatedException("error updating trainer");
@@ -129,14 +128,13 @@ public class TrainerService {
         return trainerOptional.get();
     }
 
-    // Is this not redundant, because we only encoded password in db?
     public Trainer findByUsernameAndPassword(String username, String password) {
 
         if (!checkIfUsernameExists.usernameExists(trainerDAO, username, password)) {
             throw new UnauthorizedException("no trainer with such username or password");
         }
 
-        log.info(">>>> Getting trainer using getByUsername: " + username);
+        log.info(">>>> Getting trainer using getByUsername: {}", username);
         Optional<Trainer> trainerOptional = trainerDAO.findByUsername(username);
         if (trainerOptional.isEmpty()) {
             log.error("invalid username or password");
@@ -147,7 +145,7 @@ public class TrainerService {
     }
 
     public Trainer findByUsername(String username) {
-        log.info(">>>> Getting trainer using getByUsername: " + username);
+        log.info(">>>> Getting trainer using getByUsername: {}", username);
         Optional<Trainer> trainerOptional = trainerDAO.findByUsername(username);
         if (trainerOptional.isEmpty()) {
             log.error("invalid username or password");
@@ -164,7 +162,7 @@ public class TrainerService {
             String currentPassword,
             String newPassword
     ) {
-        log.info(">>>> Updating trainer with username: " + trainer.getUsername());
+        log.info(">>>> Updating trainer with username: {}", trainer.getUsername());
         if (!checkIfUsernameExists.usernameExists(trainerDAO, username, currentPassword)) {
             throw new UnauthorizedException("no trainer with such username or password");
         }
@@ -174,7 +172,6 @@ public class TrainerService {
         }
 
         trainer.setPassword(passwordEncoder.encode(newPassword));
-        //        trainer.setPassword(newPassword);
 
         return update(trainer);
     }

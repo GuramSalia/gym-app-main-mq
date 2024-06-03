@@ -33,11 +33,11 @@ public class TrainingService {
     }
 
     public Training getById(int id) {
-        log.info(">>>> Getting training with id: " + id);
+        log.info(">>>> Getting training with id: {}", id);
 
         Optional<Training> trainingOptional = trainingDAO.getById(id);
         if (trainingOptional.isEmpty()) {
-            log.error("Cannot get training with id: " + id);
+            log.error("Cannot get training with id: {}", id);
             throw new TrainingNotFoundException("training not found");
         }
         return trainingOptional.get();

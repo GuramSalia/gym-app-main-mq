@@ -65,11 +65,6 @@ public class UserManagementController {
         String username = usernamePassword.getUsername();
         String password = usernamePassword.getPassword();
 
-        /*
-           this is how I built it first, I need it to set invalid validation attempts.
-           Otherwise, I could have used authenticate method of authenticationManager and passed in
-           new UsernamePasswordAuthenticationToken with username and password as parameters
-         */
         usernamePasswordValidationService.validateUsernamePasswordAndReturnRole(username, password);
         log.info("\n\npublic/user/login> usernamePasswordValidationService > validateUsernamePassword\n");
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(username);

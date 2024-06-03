@@ -20,6 +20,14 @@ public class UpdateStatRequestInMainApp implements Serializable {
     private Integer duration;
     @NotNull
     private ActionType actionType;
+    @NotNull
+    private String userName;
+    @NotNull
+    private String firstName;
+    @NotNull
+    private String lastName;
+    @NotNull
+    private Boolean status;
 
     public Map<String, String> toMap() {
         Map<String, String> map = new HashMap<>();
@@ -28,6 +36,10 @@ public class UpdateStatRequestInMainApp implements Serializable {
         map.put("month", month.toString());
         map.put("duration", duration.toString());
         map.put("actionType", actionType.toString());
+        map.put("userName", userName);
+        map.put("firstName", firstName);
+        map.put("lastName", lastName);
+        map.put("status", status.toString());
         return map;
     }
 }

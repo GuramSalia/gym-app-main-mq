@@ -17,21 +17,18 @@ import java.util.Map;
 public interface TrainingStatsProxy {
 
     @GetMapping("/stats-api/v1/trainer-full-stats")
-//    @CircuitBreaker(name = "trainingStatsService", fallbackMethod = "fallbackFullStats")
     public ResponseEntity<Map<Integer, List<Map<String, Integer>>>> getTrainerFullStats(
             @RequestBody FullStatRequestInMainApp fullStatRequestInMainApp,
             @RequestHeader(name = "gym_app_correlation_id", required = false, defaultValue = "no-correlation-id") String correlationId
     );
 
     @GetMapping("/stats-api/v1/trainer-monthly-stats")
-//    @CircuitBreaker(name = "trainingStatsService", fallbackMethod = "fallbackMonthlyStats")
     public ResponseEntity<Map<String, Integer>> getTrainerMonthlyStats(
             @RequestBody MonthlyStatRequestInMainApp monthlyStatRequestInMainApp,
             @RequestHeader(name = "gym_app_correlation_id", required = false, defaultValue = "no-correlation-id") String correlationId
     );
 
     @PostMapping("/stats-api/v1/trainer-stats-update")
-//    @CircuitBreaker(name = "trainingStatsService", fallbackMethod = "fallbackUpdateTrainerStats")
     public ResponseEntity<Map<String, Integer>> updateTrainerStats(
             @RequestBody UpdateStatRequestInMainApp updateStatRequestInMainApp,
             @RequestHeader(name = "gym_app_correlation_id", required = false, defaultValue = "no-correlation-id") String correlationId

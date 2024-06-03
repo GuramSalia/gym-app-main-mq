@@ -69,8 +69,4 @@ public class Trainee extends User {
     @Override
     public int hashCode() {return Objects.hash(getUserId(), getDob(), getAddress());}
 
-    //    @Override
-    //    public Collection<? extends GrantedAuthority> getAuthorities() {
-    //        return List.of(new SimpleGrantedAuthority(Role.TRAINEE.name()));
-    //    }
 }
