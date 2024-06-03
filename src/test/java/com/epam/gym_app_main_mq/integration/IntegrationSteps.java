@@ -17,7 +17,6 @@ import org.springframework.jms.core.JmsTemplate;
 public class IntegrationSteps {
 
     private final Senders senders;
-//    private final JmsTemplate jmsTemplate;
     private final TestHelperRepository testHelperRepository;
 
     private String correlationIdUpdateStat;
@@ -27,11 +26,9 @@ public class IntegrationSteps {
     @Autowired
     public IntegrationSteps(
             Senders senders,
-            JmsTemplate jmsTemplate,
             TestHelperRepository testHelperRepository
     ) {
         this.senders = senders;
-//        this.jmsTemplate = jmsTemplate;
         this.testHelperRepository = testHelperRepository;
     }
 
@@ -60,11 +57,6 @@ public class IntegrationSteps {
             assert testCorrelationIdHolder != null;
             String receivedCorrelationId = testCorrelationIdHolder.getStatUpdateCorrelationId();
 
-//            if (receivedCorrelationId.equals(this.correlationIdUpdateStat)) {
-//                messageReceived = true;
-//                break;
-//            }
-
             if (!receivedCorrelationId.equals("u")) {
                 messageReceived = true;
                 break;
@@ -82,11 +74,6 @@ public class IntegrationSteps {
 
     @Given("App 1 sends a full stat request with correlation ID {string}")
     public void appSendsAFullStatRequestWithCorrelationID(String correlationId) {
-//        TestCorrelationIdHolder testCorrelationIdHolder = testHelperRepository.findById(1).orElse(null);
-//        assert testCorrelationIdHolder != null;
-//        log.info("testCorrelationId full-stat: {}", testCorrelationIdHolder.getFullStatCorrelationId());
-//        testCorrelationIdHolder.setFullStatCorrelationId("f");
-//        testHelperRepository.save(testCorrelationIdHolder);
 
         this.correlationIdGetFullStat = correlationId;
         FullStatRequestInMainApp request = new FullStatRequestInMainApp();
@@ -106,10 +93,7 @@ public class IntegrationSteps {
             assert testCorrelationIdHolder != null;
 
             String receivedCorrelationId = testCorrelationIdHolder.getFullStatCorrelationId();
-//            if (receivedCorrelationId.equals(this.correlationIdGetFullStat)) {
-//                messageReceived = true;
-//                break;
-//            }
+
             if (!receivedCorrelationId.equals("f")) {
                 messageReceived = true;
                 break;
@@ -127,11 +111,6 @@ public class IntegrationSteps {
 
     @Given("App 1 sends a monthly request with correlation ID {string}")
     public void appSendsAMonthlyRequestWithCorrelationID(String correlationId) {
-//        TestCorrelationIdHolder testCorrelationIdHolder = testHelperRepository.findById(1).orElse(null);
-//        assert testCorrelationIdHolder != null;
-//        log.info("testCorrelationId monthly-stat: {}", testCorrelationIdHolder.getMonthlyStatCorrelationId());
-//        testCorrelationIdHolder.setMonthlyStatCorrelationId("m");
-//        testHelperRepository.save(testCorrelationIdHolder);
 
         this.correlationIdGetMonthlyStat = correlationId;
         MonthlyStatRequestInMainApp request = new MonthlyStatRequestInMainApp();
@@ -152,11 +131,6 @@ public class IntegrationSteps {
             assert testCorrelationIdHolder != null;
 
             String receivedCorrelationId = testCorrelationIdHolder.getMonthlyStatCorrelationId();
-
-//            if (receivedCorrelationId.equals(this.correlationIdGetMonthlyStat)) {
-//                messageReceived = true;
-//                break;
-//            }
 
             if (!receivedCorrelationId.equals("m")) {
                 messageReceived = true;
